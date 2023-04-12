@@ -8,7 +8,7 @@ import pandas as pd
 def export_feedback_to_csv(user_question, bad_bot_response, user_response):
     data_dict = {'question': user_question_list, 'response': bot_response_list, 'feedback': user_answer_list}
     data_df = pd.DataFrame(data_dict)
-    data_df.to_csv('user_feedback.csv', index=False)
+    data_df.to_csv('data/user_feedback.csv', index=False)
 
 # Initialize lists to store questions, responses, and feedback
 user_question_list = []
@@ -51,8 +51,6 @@ def generate_response(question, min_confidence=0.5):
 
 
 # return response
-#
-# Test the chatbot
 while True:
     question = input('You: ')
     if question == 'exit':
@@ -65,8 +63,8 @@ while True:
     if feedback == 'n':
         proper_answer = input('Please provide the correct response: ')
 
-        #calls the method to update model with correct answer for question
-        #user_update_model(question, proper_answer)
+        # #calls the method to update model with correct answer for question
+        # user_update_model(question, proper_answer)
 
         # Store the question, response, and feedback
         user_question_list.append(question)
@@ -77,4 +75,5 @@ while True:
 # model.save('models/model_user_updated.h5')
 # print("model updated")
 
+#does what it says on the tin
 export_feedback_to_csv(user_question_list, bot_response_list, user_answer_list)

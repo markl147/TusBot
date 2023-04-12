@@ -1,8 +1,8 @@
-# train_model.py
 import pandas as pd
 import numpy as np
 import tensorflow as tf
 import pickle
+from sklearn.model_selection import train_test_split
 
 # Load the CSV file
 data = pd.read_csv('data/datasetahaon.csv', sep=";", encoding='utf8')
@@ -31,6 +31,10 @@ max_length = max([len(seq) for seq in question_sequences])
 question_sequences = tf.keras.preprocessing.sequence.pad_sequences(question_sequences, maxlen=max_length, padding='post')
 answer_sequences = tf.keras.preprocessing.sequence.pad_sequences(answer_sequences, maxlen=max_length, padding='post')
 
+# Split the data into training and testing sets
+question_train, question_test, answer_train, answer_test = train_test_split(
+    question_sequences, answer_sequences, test_size=0.2, random_state=42)
+
 # Define the model
 model = tf.keras.Sequential([
     tf.keras.layers.Embedding(vocab_size, 128, input_length=max_length),
@@ -45,4 +49,10 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 model.fit(question_sequences, answer_sequences, epochs=1000)
 
 # Save the model
-model.save('models/model.h5')
+model.save('models/model1.h5')
+
+# Evaluate the model on the test set
+loss, accuracy = model.evaluate(question_test, answer_test)
+print('Loss:', loss)
+print('Accuracy:', accuracy)
+print('Epochs', 1000)
