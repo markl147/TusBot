@@ -51,7 +51,7 @@ def generate_response(question, min_confidence=0.5):
 
 
 # return response
-
+#
 # Test the chatbot
 while True:
     question = input('You: ')
