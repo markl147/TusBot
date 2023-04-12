@@ -20,7 +20,7 @@ with open('tokens/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the model
-model = tf.keras.models.load_model('models/model_user_updated.h5')
+model = tf.keras.models.load_model('models/model1.h5')
 model.summary()
 
 # Get max_length from the model
@@ -71,9 +71,10 @@ while True:
         bot_response_list.append(response)
         user_answer_list.append(proper_answer)
 
-#trains the model on questions that users provided the correct responses for
+# trains the model on questions that users provided the correct responses for
 # model.save('models/model_user_updated.h5')
 # print("model updated")
 
-#does what it says on the tin
+# does what it says on the tin
 export_feedback_to_csv(user_question_list, bot_response_list, user_answer_list)
+print('Feedback received')
