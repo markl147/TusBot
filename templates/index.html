@@ -1,0 +1,81 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Chatbot</title>-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <script>-->
+<!--        function getResponse() {-->
+<!--            const user_input = document.getElementById("user_input").value;-->
+<!--            $.post("/get_response", { user_input: user_input }, function(data) {-->
+<!--                const response = data.response;-->
+<!--                document.getElementById("chat_text").value += "You: " + user_input + "\n";-->
+<!--                document.getElementById("chat_text").value += "Bot: " + response + "\n";-->
+<!--                document.getElementById("user_input").value = "";-->
+<!--            });-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1>Chatbot</h1>-->
+<!--    <textarea id="chat_text" readonly cols="50" rows="20"></textarea><br>-->
+<!--    <input type="text" id="user_input" size="40">-->
+<!--    <button onclick="getResponse()">Send</button>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Chatbot</h1>
+    <div class="chat-window" id="chat-window"></div>
+    <div class="form-container">
+      <input type="text" id="user-input" placeholder="Type your message...">
+      <button id="send-button">Send</button>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function() {
+      $('#send-button').click(function() {
+        var userInput = $('#user-input').val();
+        if (userInput) {
+          $('#chat-window').append('<div class="message user">' + userInput + '</div>');
+          $('#user-input').val('');
+          $.ajax({
+            url: '/get_response',
+            data: { 'user_input': userInput },
+            type: 'POST',
+            success: function(response) {
+              $('#chat-window').append('<div class="message bot">' + response.response + '</div>');
+              $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+            },
+            error: function(error) {
+                              console.log(error);
+            }
+          });
+        }
+      });
+
+      $('#user-input').keypress(function(event) {
+        if (event.which == 13) {
+          event.preventDefault();
+          $('#send-button').click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+            }
+
+

@@ -51,30 +51,30 @@ def generate_response(question, min_confidence=0.5):
 
 
 # return response
-while True:
-    question = input('You: ')
-    if question == 'exit':
-        break
-    response = generate_response(question)
-    print('Bot:', response)
-
-    # Ask for user feedback
-    feedback = input('Is this response satisfactory? (y/n): ')
-    if feedback == 'n':
-        proper_answer = input('Please provide the correct response: ')
+# while True:
+#     question = input('You: ')
+#     if question == 'exit':
+#         break
+#     response = generate_response(question)
+#     print('Bot:', response)
+#
+#     # Ask for user feedback
+#     feedback = input('Is this response satisfactory? (y/n): ')
+#     if feedback == 'n':
+#         proper_answer = input('Please provide the correct response: ')
 
         # #calls the method to update model with correct answer for question
         # user_update_model(question, proper_answer)
 
         # Store the question, response, and feedback
-        user_question_list.append(question)
-        bot_response_list.append(response)
-        user_answer_list.append(proper_answer)
+        # user_question_list.append(question)
+        # bot_response_list.append(response)
+        # user_answer_list.append(proper_answer)
 
 # trains the model on questions that users provided the correct responses for
 # model.save('models/model_user_updated.h5')
 # print("model updated")
 
 # does what it says on the tin
-export_feedback_to_csv(user_question_list, bot_response_list, user_answer_list)
-print('Feedback received')
+# export_feedback_to_csv(user_question_list, bot_response_list, user_answer_list)
+# print('Feedback received')
