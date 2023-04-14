@@ -5,7 +5,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 
 # Load the CSV file
-data = pd.read_csv('data/datasetado.csv', sep=";", encoding='utf8')
+data = pd.read_csv('data/datasetatri.csv', sep=";", encoding='utf8')
 
 # Split the data into questions and answers
 questions = data['Question'].values
@@ -47,13 +47,13 @@ model = tf.keras.Sequential([
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Train the model
-model.fit(question_sequences, answer_sequences, epochs=600)
+model.fit(question_sequences, answer_sequences, epochs=500)
 
 # Save the model
-model.save('models/modeltest1500.h5')
+model.save('models/modeltest3.h5')
 
 # Evaluate the model on the test set
 loss, accuracy = model.evaluate(question_test, answer_test)
 print('Loss:', loss)
 print('Accuracy:', accuracy)
-print('Epochs + bi directional', 600)
+print('Epochs + bi directional', 500)

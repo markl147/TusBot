@@ -20,7 +20,7 @@ with open('tokens/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the model
-model = tf.keras.models.load_model('models/modeltest.h5')
+model = tf.keras.models.load_model('models/modeltest3.h5')
 model.summary()
 
 # Get max_length from the model
