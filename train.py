@@ -5,7 +5,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 
 # Load the CSV file
-data = pd.read_csv('data/datasetahaon.csv', sep=";", encoding='utf8')
+data = pd.read_csv('data/datasetado.csv', sep=";", encoding='utf8')
 
 # Split the data into questions and answers
 questions = data['Question'].values
@@ -38,6 +38,7 @@ question_train, question_test, answer_train, answer_test = train_test_split(
 # Define the model
 model = tf.keras.Sequential([
     tf.keras.layers.Embedding(vocab_size, 128, input_length=max_length),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, return_sequences=True)),
     tf.keras.layers.LSTM(128, return_sequences=True),
     tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(vocab_size, activation='softmax'))
 ])
@@ -46,13 +47,13 @@ model = tf.keras.Sequential([
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Train the model
-model.fit(question_sequences, answer_sequences, epochs=1000)
+model.fit(question_sequences, answer_sequences, epochs=600)
 
 # Save the model
-model.save('models/model1.h5')
+model.save('models/modeltest1500.h5')
 
 # Evaluate the model on the test set
 loss, accuracy = model.evaluate(question_test, answer_test)
 print('Loss:', loss)
 print('Accuracy:', accuracy)
-print('Epochs', 1000)
+print('Epochs + bi directional', 600)

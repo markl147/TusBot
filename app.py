@@ -10,7 +10,7 @@ def home():
 @app.route("/get_response", methods=["POST"])
 def get_response():
     user_input = request.form["user_input"]
-    response = generate_response(user_input)  # This function should be defined in your chatbot code
+    response = generate_response(user_input)
     return jsonify({"response": response})
 
 if __name__ == "__main__":
