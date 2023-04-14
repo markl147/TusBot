@@ -5,7 +5,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 
 # Load the CSV file
-data = pd.read_csv('data/datasetatri.csv', sep=";", encoding='utf8')
+data = pd.read_csv('data/datasetaceathar_randomised.csv', sep=";", encoding='utf8')
 
 # Split the data into questions and answers
 questions = data['Question'].values
@@ -50,13 +50,13 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
 
 # Train the model
-model.fit(question_train, answer_train, epochs=500, validation_data=(question_test, answer_test), callbacks=[reduce_lr])
+model.fit(question_train, answer_train, epochs=1000, validation_data=(question_test, answer_test), callbacks=[reduce_lr])
 
 # Save the model
-model.save('models/modeltest3.h5')
+model.save('models/model_1000_4_randomised.h5')
 
 # Evaluate the model on the test set
 loss, accuracy = model.evaluate(question_test, answer_test)
 print('Loss:', loss)
 print('Accuracy:', accuracy)
-print('Epochs + bi directional', 500)
+print('Epochs', 1000)
