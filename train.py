@@ -46,8 +46,11 @@ model = tf.keras.Sequential([
 # Compile the model
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
+# Dynamic learning rate schedule
+reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
+
 # Train the model
-model.fit(question_sequences, answer_sequences, epochs=500)
+model.fit(question_train, answer_train, epochs=500, validation_data=(question_test, answer_test), callbacks=[reduce_lr])
 
 # Save the model
 model.save('models/modeltest3.h5')
