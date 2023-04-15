@@ -49,8 +49,11 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 # Dynamic learning rate schedule
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
 
+# stops the training when validation loss does not improve for 10 consecutive epochs
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+
 # Train the model
-model.fit(question_train, answer_train, epochs=1000, validation_data=(question_test, answer_test), callbacks=[reduce_lr])
+model.fit(question_train, answer_train, epochs=1000, validation_data=(question_test, answer_test), callbacks=[reduce_lr, early_stopping])
 
 # Save the model
 model.save('models/model_1000_4_randomised.h5')

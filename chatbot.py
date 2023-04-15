@@ -1,4 +1,3 @@
-# chatbot.py
 import numpy as np
 import tensorflow as tf
 import pickle
@@ -20,7 +19,7 @@ with open('tokens/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the model
-model = tf.keras.models.load_model('models/model_500_2.h5')
+model = tf.keras.models.load_model('models/model_1000_4_randomised.h5')
 model.summary()
 
 # Get max_length from the model
