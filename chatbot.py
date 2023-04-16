@@ -48,14 +48,14 @@ def generate_response(question, min_confidence=0.2):
     else:
         return "I'm sorry, I don't have an answer for that."
 
-
+# print("Bot: Hi, my name is TusBot, how can I help you?")
 # return response
-while True:
-    question = input('You: ')
-    if question == 'exit':
-        break
-    response = generate_response(question)
-    print('Bot:', response)
+# while True:
+#     question = input('You: ')
+#     if question == 'exit':
+#         break
+#     response = generate_response(question)
+#     print('Bot:', response)
 
     # Ask for user feedback
     # feedback = input('Is this response satisfactory? (y/n): ')

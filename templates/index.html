@@ -9,17 +9,22 @@
 </head>
 <body>
   <div class="container">
-    <h1>Chatbot</h1>
-    <div class="chat-window" id="chat-window"></div>
+    <img src="{{ url_for('static', filename='logoinvert.png') }}" alt="TusBot" id="logo">
+    <div class="chat-window" id="chat-window">
+      <div class="message bot">Hi, my name is TusBot, how can I help you?</div>
+    </div>
     <div class="form-container">
-      <input type="text" id="user-input" placeholder="Type your message...">
+      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
       <button id="send-button">Send</button>
-      <button id="microphone-button">🎤</button>
+      <button id="microphone-button" type="button">🎤
+      <div id="listening-animation" style="display: none;"></div>
+      </button>
     </div>
   </div>
+
   <script>
     $(document).ready(function() {
-      $('#send-button').click(function() {
+      function sendMessage() { // Encapsulated send message functionality in a function
         var userInput = $('#user-input').val();
         if (userInput) {
           $('#chat-window').append('<div class="message user">' + userInput + '</div>');
@@ -33,16 +38,18 @@
               $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
             },
             error: function(error) {
-                              console.log(error);
+              console.log(error);
             }
           });
         }
-      });
+      }
+
+      $('#send-button').click(sendMessage);
 
       $('#user-input').keypress(function(event) {
         if (event.which == 13) {
           event.preventDefault();
-          $('#send-button').click();
+          sendMessage();
         }
       });
 
@@ -57,12 +64,17 @@
           var last = event.results.length - 1;
           var user_input = event.results[last][0].transcript;
           $('#user-input').val(user_input);
-          $('#send-button').click();
+          sendMessage();
         };
 
         $('#microphone-button').click(function() {
+          $('#listening-animation').css('display', 'block');
           recognition.start();
         });
+
+        recognition.onend = function() {
+  $('#listening-animation').css('display', 'none');
+};
       } else {
         $('#microphone-button').prop('disabled', true);
       }
@@ -71,7 +83,3 @@
   </script>
 </body>
 </html>
-
-            }
-
-
