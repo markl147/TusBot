@@ -19,11 +19,11 @@ with open('tokens/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the model
-model = tf.keras.models.load_model('models/model_1000_4_randomised_2_minuskeras.h5')
+model = tf.keras.models.load_model('models/model_200_4_randomised_2_attention17.h5')
 model.summary()
 
 # Get max_length from the model
-max_length = model.layers[0].input_shape[1]
+max_length = model.layers[1].input_shape[1]
 
 def user_update_model(question, answer, epochs=5):
     question_seq = tokenizer.texts_to_sequences([question])[0]
@@ -48,14 +48,13 @@ def generate_response(question, min_confidence=0.2):
     else:
         return "I'm sorry, I don't have an answer for that."
 
-# print("Bot: Hi, my name is TusBot, how can I help you?")
-# return response
-# while True:
-#     question = input('You: ')
-#     if question == 'exit':
-#         break
-#     response = generate_response(question)
-#     print('Bot:', response)
+print("Bot: Hi, my name is TusBot, how can I help you?")
+while True:
+    question = input('You: ')
+    if question == 'exit':
+        break
+    response = generate_response(question)
+    print('Bot:', response)
 
     # Ask for user feedback
     # feedback = input('Is this response satisfactory? (y/n): ')
