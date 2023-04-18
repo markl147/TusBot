@@ -19,7 +19,7 @@ with open('tokens/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the model
-model = tf.keras.models.load_model('models/model_50_4_randomised_2_attention.h5')
+model = tf.keras.models.load_model('models/model_earlystop_4_randomised_2_attention+seq2seq17glove.h5')
 model.summary()
 
 # Get max_length from the model
@@ -36,7 +36,8 @@ def user_update_model(question, answer, epochs=5):
 def generate_response(question, min_confidence=0.2):
     question_seq = tokenizer.texts_to_sequences([question])[0]
     question_seq = tf.keras.preprocessing.sequence.pad_sequences([question_seq], maxlen=max_length, padding='post')
-    prediction = model.predict(question_seq)[0]
+    decoder_input_data = np.zeros((1, max_length), dtype='int32')  # Create a zero array with the same shape as decoder_input_data
+    prediction = model.predict([question_seq, decoder_input_data])[0]  # Pass both question_seq and decoder_input_data to model.predict()
     index = np.argmax(prediction, axis=-1)
     confidence = np.mean([prediction[i, idx] for i, idx in enumerate(index) if idx > 0])
     response = ' '.join([tokenizer.index_word[i] for i in index if i > 0])
@@ -48,13 +49,14 @@ def generate_response(question, min_confidence=0.2):
     else:
         return "I'm sorry, I don't have an answer for that."
 
-# print("Bot: Hi, my name is TusBot, how can I help you?")
-# while True:
-#     question = input('You: ')
-#     if question == 'exit':
-#         break
-#     response = generate_response(question)
-#     print('Bot:', response)
+
+print("Bot: Hi, my name is TusBot, how can I help you?")
+while True:
+    question = input('You: ')
+    if question == 'exit':
+        break
+    response = generate_response(question)
+    print('Bot:', response)
 
     # Ask for user feedback
     # feedback = input('Is this response satisfactory? (y/n): ')
