@@ -1,86 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tusbot</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1G2G6Nz5Q5rW1/8z2I/5oAwKzN/8W8eE/+9KKJ" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tusbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1G2G6Nz5Q5rW1/8z2I/5oAwKzN/8W8eE/+9KKJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <img src="{{ url_for('static', filename='TusBot_logo_finalpng.png') }}" alt="TusBot" id="logo">
     <div class="chat-window" id="chat-window">
-      <div class="message bot">Hi, my name is TusBot, how can I help you?</div>
+        <div class="message bot">Hi, my name is TusBot, how can I help you?</div>
     </div>
     <div class="form-container">
-      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
-      <button id="send-button">Send</button>
-      <button id="microphone-button" type="button">🎤
-      <div id="listening-animation" style="display: none;"></div>
-      </button>
+        <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+        <button id="send-button">Send</button>
+        <button id="microphone-button" type="button">🎤
+            <div id="listening-animation" style="display: none;"></div>
+        </button>
+        <!--      <button id="tts-toggle-button" type="button">🔊</button>-->
+        <label class="switch">
+            <input type="checkbox" id="tts-toggle">
+            <span class="slider round"></span>
+        </label>
+
     </div>
-  </div>
+</div>
 
-  <script>
-    $(document).ready(function() {
-      function sendMessage() { // Encapsulated send message functionality in a function
-        var userInput = $('#user-input').val();
-        if (userInput) {
-          $('#chat-window').append('<div class="message user">' + userInput + '</div>');
-          $('#user-input').val('');
-          $.ajax({
-            url: '/get_response',
-            data: { 'user_input': userInput },
-            type: 'POST',
-            success: function(response) {
-              $('#chat-window').append('<div class="message bot">' + response.response + '</div>');
-              $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
-            },
-            error: function(error) {
-              console.log(error);
+<script>
+    $(document).ready(function () {
+
+        //variable to store the text-to-speech state
+        var ttsEnabled = false;
+
+        //text to speech function
+        function speak(text) {
+            if (ttsEnabled) {
+                // Creates a speech synthesis object
+                var synth = window.speechSynthesis;
+                // Creates a new speech synthesis utterance with the input text
+                var utterance = new SpeechSynthesisUtterance(text);
+                //speaks the text back out
+                synth.speak(utterance);
             }
-          });
         }
-      }
 
-      $('#send-button').click(sendMessage);
-
-      $('#user-input').keypress(function(event) {
-        if (event.which == 13) {
-          event.preventDefault();
-          sendMessage();
+        // sends the users message to the server
+        function sendMessage() {
+            // Retrieves the users input
+            var userInput = $('#user-input').val();
+            if (userInput) {
+                // Appends the user's input to the chat window
+                $('#chat-window').append('<div class="message user">' + userInput + '</div>');
+                // Clears the input field
+                $('#user-input').val('');
+                // Sends an AJAX request to the server with the user input
+                $.ajax({
+                    url: '/get_response',
+                    data: {'user_input': userInput},
+                    type: 'POST',
+                    success: function (response) {
+                        // Appends the bot's response to the chat window
+                        $('#chat-window').append('<div class="message bot">' + response.response + '</div>');
+                        // Scrolls the chat window to the bottom
+                        $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+                        // Speaks the bot's response if text-to-speech is enabled
+                        speak(response.response);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
         }
-      });
 
-      if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-        var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        var recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = 'en-US';
+        // Calls the sendMessage function when the send button is clicked
+        $('#send-button').click(sendMessage);
 
-        recognition.onresult = function(event) {
-          var last = event.results.length - 1;
-          var user_input = event.results[last][0].transcript;
-          $('#user-input').val(user_input);
-          sendMessage();
-        };
-
-        $('#microphone-button').click(function() {
-          $('#listening-animation').css('display', 'block');
-          recognition.start();
+        // Calls the sendMessage function when the enter key is pressed
+        $('#user-input').keypress(function (event) {
+            if (event.which == 13) {
+                event.preventDefault();
+                sendMessage();
+            }
         });
 
-        recognition.onend = function() {
-  $('#listening-animation').css('display', 'none');
-};
-      } else {
-        $('#microphone-button').prop('disabled', true);
-      }
+        // Updates the text to speech state based on the toggle switches checked state
+        $('#tts-toggle').change(function () {
+            ttsEnabled = $(this).is(':checked');
+        });
+
+        // Checks if the browser supports speech recognition
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            // Creates a new speech recognition object
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            var recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            // Processes the speech recognition result
+            recognition.onresult = function (event) {
+                var last = event.results.length - 1;
+                var user_input = event.results[last][0].transcript;
+                // Sets the recognized speech as the value of the input field
+                $('#user-input').val(user_input);
+                // Sends the message
+                sendMessage();
+            };
+
+            // Displays the listening animation and starts speech recognition
+            $('#microphone-button').click(function () {
+                $('#listening-animation').css('display', 'block');
+                recognition.start();
+            });
+
+            // Hides the listening animation when the speech recognition stops listening
+            recognition.onend = function () {
+                $('#listening-animation').css('display', 'none');
+            };
+        } else {
+            $('#microphone-button').prop('disabled', true);
+        }
 
     });
-  </script>
+</script>
 </body>
 </html>

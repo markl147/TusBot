@@ -15,11 +15,11 @@ bot_response_list = []
 user_answer_list = []
 
 # Load the tokenizer
-with open('tokens/tokenizer.pickle', 'rb') as handle:
+with open('tokens/tokenizer2.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the model
-model = tf.keras.models.load_model('models/model_earlystop_4_randomised_2_attention+seq2seq17glove.h5')
+model = tf.keras.models.load_model('models/model_earlystop_4_randomised_2_attention_expo.h5')
 model.summary()
 
 # Get max_length from the model
@@ -50,13 +50,13 @@ def generate_response(question, min_confidence=0.2):
         return "I'm sorry, I don't have an answer for that."
 
 
-print("Bot: Hi, my name is TusBot, how can I help you?")
-while True:
-    question = input('You: ')
-    if question == 'exit':
-        break
-    response = generate_response(question)
-    print('Bot:', response)
+# print("Bot: Hi, my name is TusBot, how can I help you?")
+# while True:
+#     question = input('You: ')
+#     if question == 'exit':
+#         break
+#     response = generate_response(question)
+#     print('Bot:', response)
 
     # Ask for user feedback
     # feedback = input('Is this response satisfactory? (y/n): ')

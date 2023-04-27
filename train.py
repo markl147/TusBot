@@ -3,6 +3,8 @@ import numpy as np
 import tensorflow as tf
 import pickle
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
 
 # Load the CSV file
 data = pd.read_csv('data/datasetaceathar_randomised_2.csv', sep=";", encoding='utf8')
@@ -104,18 +106,33 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
 
 # stops the training when validation loss does not improve for 10 consecutive epochs
-#early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
 # # Train the model
 # model.fit(question_train, answer_train, epochs=200, validation_data=(question_test, answer_test), callbacks=[reduce_lr])
 
-model.fit([question_train, decoder_input_data], answer_train, epochs=200,
-          validation_data=([question_test, decoder_input_data_test], answer_test),
-          callbacks=[reduce_lr])
 
+
+# Train the model and save the history
+history = model.fit([question_train, decoder_input_data], answer_train, epochs=200,
+          validation_data=([question_test, decoder_input_data_test], answer_test),
+          callbacks=[reduce_lr, early_stopping])
+
+# Plot accuracy vs validation loss
+plt.figure(figsize=(10, 5))
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy / Loss')
+plt.legend(loc='upper right')
+plt.title('Accuracy vs Validation Loss')
+plt.savefig('graphs/accuracy_vs_val_loss_no_attention.png')  # Save the graph as an image
+plt.show()  # Display the graph
 
 # Save the model
-model.save('models/model_50_4_randomised_2_attention+seq2seq17.h5')
+model.save('models/model_100_4_randomised_2_bare_test.h5')
 
 # Evaluate the model on the test set
 loss, accuracy = model.evaluate(question_test, answer_test)
