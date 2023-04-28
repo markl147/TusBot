@@ -107,4 +107,3 @@ loss, accuracy = model.evaluate([question_test, decoder_input_data_test], answer
 print('Loss:', loss)
 print('Accuracy:', accuracy)
 print('Epochs', 1000)
-
